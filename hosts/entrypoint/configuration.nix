@@ -14,7 +14,6 @@
     # (execSh "echo ${hostDir}/hardware-configuration.nix")
     inputs.home-manager.nixosModules.home-manager
   ];
-  boot.loader.efi.canTouchEfiVariables = true;
   boot.loader.grub = {
     enable = true;
     efiSupport = true;
@@ -33,13 +32,18 @@
     "nix-command"
     "flakes"
   ];
-
+  programs.zsh.enable = true;
   networking.hostName = "entrypoint";
   time.timeZone = "UTC";
 
   environment.systemPackages = with pkgs; [
     git
     nano
+    zsh
+    htop
+    neofetch
+    wget
+    curl
   ];
 
   services.openssh.enable = true;
