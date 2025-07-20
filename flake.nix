@@ -46,6 +46,7 @@
         specialArgs = {inherit inputs system;};
         modules = [
           ./hosts/entrypoint/configuration.nix
+          ./users/ellenord.nix
         ];
       };
     };
