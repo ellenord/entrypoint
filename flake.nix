@@ -23,7 +23,7 @@
       config.allowUnfree = true;
     };
     execSh = expression: builtins.exec ["sh" "-c" expression];
-    flakeRoot = builtins.toString (execSh "pwd");
+    flakeRoot = toString (execSh "pwd");
     my-script = pkgs.writeShellApplication {
       name = "my-script";
       text = ''

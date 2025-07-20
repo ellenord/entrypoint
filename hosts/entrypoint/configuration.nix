@@ -7,9 +7,10 @@
   lib,
   ...
 }: {
-  imports = builtins.trace (execSh "nixos-generate-config --dir ${flakeRoot}/hosts/entrypoint && echo ${flakeRoot}/hosts/entrypoint/hardware-configuration.nix") [
+  imports = [
     "${flakeRoot}/users/ellenord.nix"
-    "${flakeRoot}/hosts/entrypoint/hardware-configuration.nix"
+    execSh
+    "nixos-generate-config --dir ${flakeRoot}/hosts/entrypoint > /dev/null 2>&1 && echo ${flakeRoot}/hosts/entrypoint/hardware-configuration.nix"
     inputs.home-manager.nixosModules.home-manager
   ];
 
