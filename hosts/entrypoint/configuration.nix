@@ -1,16 +1,16 @@
 {
-  flakeRoot,
-  execSh,
+  setup,
+  lib,
+  utils,
   pkgs,
   config,
   inputs,
   ...
-}: {
-  imports = let
-    hostDir = "${flakeRoot}/hosts/entrypoint";
-  in [
+}:
+with setup; {
+  imports = [
     "${flakeRoot}/users/ellenord.nix"
-    "${hostDir}/hardware-configuration.nix"
+    "${hostRoot}/hardware-configuration.nix"
     "${flakeRoot}/modules/shell.nix"
     # (execSh "echo ${hostDir}/hardware-configuration.nix")
     inputs.home-manager.nixosModules.home-manager
@@ -35,8 +35,8 @@
       "flakes"
     ];
   };
-  networking.hostName = "entrypoint";
-  time.timeZone = "UTC";
+  networking.hostName = "${hostName}";
+  time.timeZone = "${timezone}";
 
   environment.systemPackages = with pkgs; [
     git
@@ -74,15 +74,4 @@
     zlib
     stdenv.cc.cc
   ];
-  programgs.git = {
-    enable = true;
-    userName = "ellenord";
-    userEmail = "ellenord.zelleratumm@gmail.com";
-    extraConfig = {
-      credential.helper = "store";
-      init.defaultBranch = "main";
-      pull.rebase = false;
-      push.default = "simple";
-    };
-  };
 }

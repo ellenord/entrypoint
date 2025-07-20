@@ -4,5 +4,5 @@ export NIX_CONFIG=$'experimental-features = nix-command flakes\nallow-unsafe-nat
 export NIXPKGS_ALLOW_UNFREE=1
 
 set -a
-source setup.env
+source ./setup.env
 set +a
