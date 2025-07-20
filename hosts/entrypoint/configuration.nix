@@ -74,4 +74,15 @@
     zlib
     stdenv.cc.cc
   ];
+  programgs.git = {
+    enable = true;
+    userName = "ellenord";
+    userEmail = "ellenord.zelleratumm@gmail.com";
+    extraConfig = {
+      credential.helper = "store";
+      init.defaultBranch = "main";
+      pull.rebase = false;
+      push.default = "simple";
+    };
+  };
 }
