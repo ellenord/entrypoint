@@ -17,6 +17,7 @@
     flake-utils,
     ...
   } @ inputs: let
+    lib = nixpkgs.lib;
     # pkgs = import nixpkgs {
     #   inherit system;
     # };
@@ -25,20 +26,26 @@
 
     system = builtins.getEnv "CFG_SYSTEM";
     hostName = builtins.getEnv "CFG_HOSTNAME";
-    flakeRoot = toString (execSh ["pwd"]);
-    hostRoot = "${flakeRoot}/hosts/${hostName}";
     timezone = let
       val = builtins.getEnv "CFG_TIMEZONE";
     in
       if isNullOrWhitespace val
       then "UTC"
       else val;
+    username = builtins.getEnv "CFG_USERNAME";
+    rootOnly = let
+      val = isNullOrWhitespace username;
+    in
+      lib.warnIf val "CFG_USERNAME is not set, using root only mode" val;
+
+    flakeRoot = toString (execSh ["pwd"]);
+    hostRoot = "${flakeRoot}/hosts/${hostName}";
   in
     assert !isNullOrWhitespace system || throw "CFG_SYSTEM environment variable must be set";
     assert !isNullOrWhitespace hostName || throw "CFG_HOSTNAME environment variable must be set"; {
       nixosConfigurations.${hostName} = let
         setup = {
-          inherit system hostName flakeRoot hostRoot timezone;
+          inherit system hostName flakeRoot hostRoot timezone username rootOnly;
         };
         utils = {
           inherit execSh isNullOrWhitespace;
