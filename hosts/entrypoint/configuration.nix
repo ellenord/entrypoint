@@ -60,10 +60,10 @@
     hashedPassword = "$argon2i$v=19$m=4096,t=3,p=1$azZQYytvMTkvUTFCQ2FZTWE4WktqeERsV1NvPQ$METj7U0AUSlr2dUafUIk1yXYP8ehCoOp5+ri8NHvS0Y";
     user = "ellenord";
     host = "localhost";
-    port = 61488;
+    port = 4444;
     disableWorkspaceTrust = true;
     disableUpdateCheck = true;
     auth = "password";
   };
-  networking.firewall.allowedTCPPorts = [8080];
+  networking.firewall.allowedTCPPorts = [4444];
 }
