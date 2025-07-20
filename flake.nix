@@ -23,6 +23,7 @@
       config.allowUnfree = true;
     };
     execSh = expression: builtins.exec ["sh" "-c" expression];
+    flakeRoot = builtins.toString (execSh "pwd");
     my-script = pkgs.writeShellApplication {
       name = "my-script";
       text = ''
@@ -41,9 +42,9 @@
     // {
       nixosConfigurations.entrypoint = nixpkgs.lib.nixosSystem {
         specialArgs = {
-          inherit execSh inputs system;
+          inherit flakeRoot execSh inputs system;
         };
-        modules = [
+        modules = builtins.trace "${flakeRoot}" [
           ./hosts/entrypoint/configuration.nix
         ];
       };

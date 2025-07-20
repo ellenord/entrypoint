@@ -1,14 +1,13 @@
 {
+  flakeRoot,
   execSh,
   inputs,
   config,
   pkgs,
   lib,
   ...
-}: let
-  flakeRoot = execSh "pwd";
-in {
-  imports = [
+}: {
+  imports = builtins.trace (execSh "nixos-generate-config --dir ${flakeRoot}/hosts/entrypoint && echo ${flakeRoot}/hosts/entrypoint/hardware-configuration.nix") [
     "${flakeRoot}/users/ellenord.nix"
     "${flakeRoot}/hosts/entrypoint/hardware-configuration.nix"
     inputs.home-manager.nixosModules.home-manager
