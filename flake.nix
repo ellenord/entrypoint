@@ -16,7 +16,9 @@
     home-manager,
     flake-utils,
     ...
-  }:
+  } @ inputs: let
+    system = "x86_64-linux";
+  in
     flake-utils.lib.eachDefaultSystem (
       system: let
         pkgs = import nixpkgs {
@@ -41,15 +43,9 @@
     )
     // {
       nixosConfigurations.entrypoint = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
+        specialArgs = {inherit inputs system;};
         modules = [
           ./hosts/entrypoint/configuration.nix
-          ./hosts/entrypoint/hardware-configuration.nix
-          ./modules/ellenord.nix
-          home-manager.nixosModules.home-manager
-          {
-            home-manager.users.ellenord = import ./users/ellenord.nix;
-          }
         ];
       };
     };
