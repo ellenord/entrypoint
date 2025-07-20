@@ -14,7 +14,7 @@
     # (execSh "echo ${hostDir}/hardware-configuration.nix")
     inputs.home-manager.nixosModules.home-manager
   ];
-
+  boot.loader.efi.canTouchEfiVariables = true;
   boot.loader.grub = {
     enable = true;
     efiSupport = true;
