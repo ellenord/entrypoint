@@ -56,15 +56,11 @@
     "console=ttyS0,115200"
     "quiet"
   ];
-  services.openvscode-server = {
-    enable = true;
-    user = "ellenord";
-    host = "localhost";
-    port = 8080;
-    withoutConnectionToken = true;
-    extraArguments = [
-      "--bind-addr=0.0.0.0:8080"
-    ];
-  };
+  programs.nix-ld.enable = true;
+  programs.nix-ld.libraries = with pkgs; [
+    glibc
+    zlib
+    stdenv.cc.cc
+  ];
   networking.firewall.allowedTCPPorts = [8080];
 }
