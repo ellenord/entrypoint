@@ -28,12 +28,13 @@
       terminal_output serial
     '';
   };
-  nix.settings.allow-unsafe-native-code-during-evaluation = true;
-  nix.settings.experimental-features = [
-    "nix-command"
-    "flakes"
-  ];
-  programs.zsh.enable = true;
+  nix.settings = {
+    allow-unsafe-native-code-during-evaluation = true;
+    experimental-features = [
+      "nix-command"
+      "flakes"
+    ];
+  };
   networking.hostName = "entrypoint";
   time.timeZone = "UTC";
 
@@ -46,6 +47,13 @@
     curl
     openvscode-server
     direnv
+    nixpkgs-fmt
+    nil
+    nixfmt-rfc-style
+    vscode-extensions.jnoortheen.nix-ide
+    alejandra
+    nix-direnv
+    statix
   ];
 
   services.openssh.enable = true;
@@ -56,11 +64,14 @@
     "console=ttyS0,115200"
     "quiet"
   ];
+  programs.zsh.enable = true;
+
+  networking.firewall.allowedTCPPorts = [8080];
+
   programs.nix-ld.enable = true;
   programs.nix-ld.libraries = with pkgs; [
     glibc
     zlib
     stdenv.cc.cc
   ];
-  networking.firewall.allowedTCPPorts = [8080];
 }
