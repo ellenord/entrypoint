@@ -45,6 +45,7 @@
     wget
     curl
     openvscode-server
+    direnv
   ];
 
   services.openssh.enable = true;
