@@ -37,6 +37,11 @@
       val = isNullOrWhitespace username;
     in
       lib.warnIf val "CFG_USERNAME is not set, using root only mode" val;
+    locale = builtins.getEnv "CFG_LOCALE";
+    undefinedLocale = let
+      val = isNullOrWhitespace locale;
+    in
+      lib.warnIf val "CFG_LOCALE is not set, using default: \"en_US.UTF-8\"" val;
 
     flakeRoot = toString (execSh ["pwd"]);
     hostRoot = "${flakeRoot}/hosts/${hostName}";
@@ -45,7 +50,7 @@
     assert !isNullOrWhitespace hostName || throw "CFG_HOSTNAME environment variable must be set"; {
       nixosConfigurations.${hostName} = let
         setup = {
-          inherit system hostName flakeRoot hostRoot timezone username rootOnly;
+          inherit system hostName flakeRoot hostRoot timezone username rootOnly locale undefinedLocale;
         };
         utils = {
           inherit execSh isNullOrWhitespace;
