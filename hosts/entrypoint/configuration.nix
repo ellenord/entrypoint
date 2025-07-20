@@ -5,7 +5,8 @@
   ...
 }: {
   imports = [
-    ./hosts/entrypoint/hardware-configuration.nix
+    ./hardware-configuration.nix
+    ./../../users/ellenord.nix
   ];
 
   nix.settings.experimental-features = [
