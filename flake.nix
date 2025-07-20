@@ -24,27 +24,21 @@
     };
     execSh = expression: builtins.exec ["sh" "-c" expression];
     flakeRoot = toString (execSh "pwd");
-    my-script = pkgs.writeShellApplication {
-      name = "my-script";
-      text = ''
-        echo "Привет, Никита!"
-        echo "Дата: $(date)"
-      '';
-    };
   in
     {
       devShells.default = pkgs.mkShell {
-        packages = [pkgs.git pkgs.nixfmt my-script];
+        packages = with pkgs; [
+          git
+          nixfmt
+        ];
       };
-
-      packages.my-script = my-script;
     }
     // {
       nixosConfigurations.entrypoint = nixpkgs.lib.nixosSystem {
         specialArgs = {
           inherit flakeRoot execSh inputs system;
         };
-        modules = builtins.trace "${flakeRoot}" [
+        modules = [
           ./hosts/entrypoint/configuration.nix
         ];
       };
