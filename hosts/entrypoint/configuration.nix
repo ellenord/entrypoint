@@ -4,7 +4,7 @@
   ...
 }: {
   imports = [
-    ./hardware-configuration.nix
+    ./hosts/entrypoint/hardware-configuration.nix
   ];
 
   nix.settings.experimental-features = [
