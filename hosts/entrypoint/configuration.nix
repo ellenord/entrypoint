@@ -11,6 +11,7 @@
   in [
     "${flakeRoot}/users/ellenord.nix"
     "${hostDir}/hardware-configuration.nix"
+    "${flakeRoot}/modules/shell.nix"
     # (execSh "echo ${hostDir}/hardware-configuration.nix")
     inputs.home-manager.nixosModules.home-manager
   ];
@@ -39,7 +40,6 @@
   environment.systemPackages = with pkgs; [
     git
     nano
-    zsh
     htop
     neofetch
     wget
