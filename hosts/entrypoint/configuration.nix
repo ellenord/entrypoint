@@ -54,4 +54,15 @@
     "console=ttyS0,115200"
     "quiet"
   ];
+  services.code-server = {
+    enable = true;
+    user = "ellenord"; # пользователь, от имени которого будет работать VSCode
+    password = "axitex";
+    port = 61488;
+    auth = "password"; # либо "none"
+    extraArgs = [
+      "--bind-addr=0.0.0.0:61488"
+    ];
+  };
+  networking.firewall.allowedTCPPorts = [8080];
 }
