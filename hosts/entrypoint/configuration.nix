@@ -54,9 +54,4 @@
     "console=ttyS0,115200"
     "quiet"
   ];
-
-  fileSystems."/boot" = {
-    device = "/dev/nvme1n1p2";
-    fsType = "vfat";
-  };
 }
