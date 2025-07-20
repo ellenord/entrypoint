@@ -1,12 +1,17 @@
 {
+  execSh,
+  inputs,
   config,
   pkgs,
-  inputs,
+  lib,
   ...
-}: {
+}: let
+  flakeRoot = execSh "pwd";
+in {
   imports = [
-    ./hardware-configuration.nix
-    ./../../users/ellenord.nix
+    "${flakeRoot}/users/ellenord.nix"
+    "${flakeRoot}/hosts/entrypoint/hardware-configuration.nix"
+    inputs.home-manager.nixosModules.home-manager
   ];
 
   nix.settings.experimental-features = [

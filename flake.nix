@@ -18,32 +18,31 @@
     ...
   } @ inputs: let
     system = "x86_64-linux";
+    pkgs = import nixpkgs {
+      inherit system;
+      config.allowUnfree = true;
+    };
+    execSh = expression: builtins.exec ["sh" "-c" expression];
+    my-script = pkgs.writeShellApplication {
+      name = "my-script";
+      text = ''
+        echo "Привет, Никита!"
+        echo "Дата: $(date)"
+      '';
+    };
   in
-    flake-utils.lib.eachDefaultSystem (
-      system: let
-        pkgs = import nixpkgs {
-          inherit system;
-          config.allowUnfree = true;
-        };
+    {
+      devShells.default = pkgs.mkShell {
+        packages = [pkgs.git pkgs.nixfmt my-script];
+      };
 
-        my-script = pkgs.writeShellApplication {
-          name = "my-script";
-          text = ''
-            echo "Привет, Никита!"
-            echo "Дата: $(date)"
-          '';
-        };
-      in {
-        devShells.default = pkgs.mkShell {
-          packages = [pkgs.git pkgs.nixfmt my-script];
-        };
-
-        packages.my-script = my-script;
-      }
-    )
+      packages.my-script = my-script;
+    }
     // {
       nixosConfigurations.entrypoint = nixpkgs.lib.nixosSystem {
-        specialArgs = {inherit inputs system;};
+        specialArgs = {
+          inherit execSh inputs system;
+        };
         modules = [
           ./hosts/entrypoint/configuration.nix
         ];
