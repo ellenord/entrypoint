@@ -44,6 +44,8 @@
         system = "x86_64-linux";
         modules = [
           ./hosts/entrypoint/configuration.nix
+          ./hosts/entrypoint/hardware-configuration.nix
+          ./modules/ellenord.nix
           home-manager.nixosModules.home-manager
           {
             home-manager.users.ellenord = import ./users/ellenord.nix;
