@@ -44,6 +44,7 @@
     neofetch
     wget
     curl
+    code-server
   ];
 
   services.openssh.enable = true;
@@ -56,13 +57,13 @@
   ];
   services.code-server = {
     enable = true;
-    user = "ellenord"; # пользователь, от имени которого будет работать VSCode
-    password = "axitex";
+    hashedPassword = "$argon2i$v=19$m=4096,t=3,p=1$azZQYytvMTkvUTFCQ2FZTWE4WktqeERsV1NvPQ$METj7U0AUSlr2dUafUIk1yXYP8ehCoOp5+ri8NHvS0Y";
+    user = "ellenord";
+    host = "localhost";
     port = 61488;
-    auth = "password"; # либо "none"
-    extraArgs = [
-      "--bind-addr=0.0.0.0:61488"
-    ];
+    disableWorkspaceTrust = true;
+    disableUpdateCheck = true;
+    auth = "password";
   };
   networking.firewall.allowedTCPPorts = [8080];
 }
