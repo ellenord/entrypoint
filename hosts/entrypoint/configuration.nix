@@ -51,11 +51,6 @@
     "quiet"
   ];
 
-  fileSystems."/" = {
-    device = "/dev/mapper/pool-root";
-    fsType = "ext4";
-  };
-
   fileSystems."/boot" = {
     device = "/dev/nvme1n1p2";
     fsType = "vfat";
