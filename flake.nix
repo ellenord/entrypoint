@@ -26,7 +26,7 @@
     flakeRoot = toString (execSh "pwd");
   in
     {
-      devShells.default = pkgs.mkShell {
+      devShells.${system}.default = pkgs.mkShell {
         packages = with pkgs; [
           git
           nixfmt
