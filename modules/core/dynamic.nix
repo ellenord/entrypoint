@@ -1,16 +1,14 @@
 {
   setup,
-  lib,
   config,
+  lib,
   ...
 }:
 with setup; let
-  module = lib.debug.traceSeq "loading system dynamic configuration..." ({
-      # may be needed for some packages to work
-      security.rtkit.enable = true;
-      # extend life of SSD, disable if on HDD
-      services.fstrim.enable = true;
+  module = trace "loading system dynamic configuration..." ({
+      security.rtkit.enable = lib.mkForce rtkitEnabled;
+      services.fstrim.enable = lib.mkForce fstrimEnabled;
     }
-    // lib.debug.traceSeq "system dynamic configuration loaded successfully!" {});
+    // trace "system dynamic configuration loaded successfully!" {});
 in
   module

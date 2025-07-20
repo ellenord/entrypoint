@@ -1,15 +1,11 @@
-{
-  setup,
-  lib,
-  ...
-}:
+{setup, ...}:
 with setup; let
-  module = lib.debug.traceSeq "loading system core configuration..." ({
+  module = trace "loading system core configuration..." ({
       imports = [
         "${flakeRoot}/modules/core/static.nix"
         "${flakeRoot}/modules/core/dynamic.nix"
       ];
     }
-    // lib.debug.traceSeq "system core configuration loaded successfully!" {});
+    // trace "system core configuration loaded successfully!" {});
 in
   module

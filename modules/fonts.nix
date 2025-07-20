@@ -1,15 +1,25 @@
 {
-  lib,
+  setup,
   pkgs,
   config,
+  lib,
   ...
-}: let
+}:
+with setup; let
   module =
-    lib.debug.traceSeq "loading system fonts configuration..."
+    trace "loading system fonts configuration..."
     ({
         fonts = {
-          enableGhostscriptFonts = true;
-          enableDefaultPackages = true;
+          enableGhostscriptFonts = mkDefault true;
+          enableDefaultPackages = mkDefault true;
+          fontconfig = {
+            subpixel.rgba = mkDefault "rgb";
+            defaultFonts = {
+              serif = mkAfter ["Noto Serif" "Source Han Serif SC" "Source Han Serif TC" "Source Han Serif JP"];
+              sansSerif = mkAfter ["Noto Sans" "Source Han Sans SC" "Source Han Sans TC" "Source Han Sans JP"];
+              monospace = mkAfter ["MesloLGS NF"];
+            };
+          };
           packages = with pkgs;
             [
               # General Fonts
@@ -29,16 +39,8 @@
               wqy_microhei
             ]
             ++ builtins.filter lib.attrsets.isDerivation (builtins.attrValues pkgs.nerd-fonts);
-          fontconfig = {
-            subpixel.rgba = "rgb";
-            defaultFonts = {
-              serif = ["Noto Serif" "Source Han Serif SC" "Source Han Serif TC" "Source Han Serif JP"];
-              sansSerif = ["Noto Sans" "Source Han Sans SC" "Source Han Sans TC" "Source Han Sans JP"];
-              monospace = ["MesloLGS NF"];
-            };
-          };
         };
       }
-      // lib.debug.traceSeq "system fonts configuration loaded successfully!" {});
+      // trace "system fonts configuration loaded successfully!" {});
 in
   module

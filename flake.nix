@@ -42,15 +42,45 @@
       val = isNullOrWhitespace locale;
     in
       lib.warnIf val "CFG_LOCALE is not set, using default: \"en_US.UTF-8\"" val;
+    rtkitEnabled = builtins.getEnv "CFG_RTKIT_ENABLED" == "1" || builtins.getEnv "CFG_RTKIT_ENABLED" == "true";
+    fstrimEnabled = builtins.getEnv "CFG_FSTRIM_ENABLED" == "1" || builtins.getEnv "CFG_FSTRIM_ENABLED" == "true";
+
+    randomSeed = builtins.getEnv "CFG_RANDOM_SEED";
+
+    trace = lib.debug.traceSeq;
+
+    mkForce = nixpkgs.lib.mkForce;
+    mkAfter = nixpkgs.lib.mkAfter;
+    mkDefault = nixpkgs.lib.mkDefault;
+    mapAttrs = nixpkgs.lib.mapAttrs;
 
     flakeRoot = toString (execSh ["pwd"]);
     hostRoot = "${flakeRoot}/hosts/${hostName}";
   in
     assert !isNullOrWhitespace system || throw "CFG_SYSTEM environment variable must be set";
-    assert !isNullOrWhitespace hostName || throw "CFG_HOSTNAME environment variable must be set"; {
+    assert !isNullOrWhitespace hostName || throw "CFG_HOSTNAME environment variable must be set";
+    assert !isNullOrWhitespace randomSeed || throw "CFG_RANDOM_SEED environment variable must be set"; {
       nixosConfigurations.${hostName} = let
         setup = {
-          inherit system hostName flakeRoot hostRoot timezone username rootOnly locale undefinedLocale;
+          inherit
+            system
+            hostName
+            flakeRoot
+            hostRoot
+            timezone
+            username
+            rootOnly
+            locale
+            undefinedLocale
+            rtkitEnabled
+            fstrimEnabled
+            randomSeed
+            mkForce
+            mkAfter
+            mkDefault
+            trace
+            mapAttrs
+            ;
         };
         utils = {
           inherit execSh isNullOrWhitespace;

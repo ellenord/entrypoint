@@ -5,7 +5,7 @@
   ...
 }:
 with setup; let
-  module = lib.debug.traceSeq "loading system static configuration..." ({
+  module = trace "loading system static configuration..." ({
       system.stateVersion = "25.05";
       services = {
         openssh.enable = true;
@@ -49,6 +49,6 @@ with setup; let
         ];
       };
     }
-    // lib.debug.traceSeq "system static configuration loaded successfully!" {});
+    // trace "system static configuration loaded successfully!" {});
 in
   module

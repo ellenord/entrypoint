@@ -7,15 +7,15 @@
   ...
 }:
 with setup; let
-  configuration = lib.debug.traceSeq "loading system host configuration...\n${lib.generators.toPretty {} setup}" ({
+  configuration = trace "loading system host configuration...\n${lib.generators.toPretty {} setup}" ({
       imports =
         [
-          (lib.debug.traceSeq
-            "loading system hardware configuration..."
-            "${hostRoot}/hardware-configuration.nix")
+          "${hostRoot}/hardware-configuration.nix"
           "${hostRoot}/boot.nix"
           "${flakeRoot}/modules/shell.nix"
           "${flakeRoot}/modules/fonts.nix"
+          "${flakeRoot}/modules/networking.nix"
+          "${flakeRoot}/modules/locale.nix"
           "${flakeRoot}/modules/core"
         ]
         ++ (
@@ -26,8 +26,6 @@ with setup; let
             inputs.home-manager.nixosModules.home-manager
           ]
         );
-      networking.hostName = "${hostName}";
-      time.timeZone = "${timezone}";
 
       environment.systemPackages = with pkgs; [
         git
@@ -47,17 +45,15 @@ with setup; let
         statix
       ];
 
-      programs.zsh.enable = true;
-
-      networking.firewall.allowedTCPPorts = [8080];
-
-      programs.nix-ld.enable = true;
-      programs.nix-ld.libraries = with pkgs; [
-        glibc
-        zlib
-        stdenv.cc.cc
-      ];
+      programs.nix-ld = {
+        enable = true;
+        libraries = with pkgs; [
+          glibc
+          zlib
+          stdenv.cc.cc
+        ];
+      };
     }
-    // lib.debug.traceSeq "system host configuration loaded successfully!" {});
+    // trace "system host configuration loaded successfully!" {});
 in
   configuration

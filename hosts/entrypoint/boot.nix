@@ -1,9 +1,10 @@
 {
   config,
-  lib,
+  setup,
   ...
-}: let
-  module = lib.debug.traceSeq "loading system boot configuration..." ({
+}:
+with setup; let
+  module = trace "loading system boot configuration..." ({
       boot = {
         kernelParams = [
           "console=ttyS0,115200"
@@ -24,6 +25,6 @@
         };
       };
     }
-    // lib.debug.traceSeq "system boot configuration loaded successfully!" {});
+    // trace "system boot configuration loaded successfully!" {});
 in
   module
