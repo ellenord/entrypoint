@@ -40,7 +40,7 @@
       }
     )
     // {
-      nixosConfigurations.nixbox = nixpkgs.lib.nixosSystem {
+      nixosConfigurations.entrypoint = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = [
           ./hosts/entrypoint/configuration.nix
