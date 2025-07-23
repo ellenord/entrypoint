@@ -20,9 +20,10 @@
     }@inputs:
     let
       lib = nixpkgs.lib;
-      # pkgs = import nixpkgs {
-      #   inherit system;
-      # };
+      system = builtins.getEnv "CFG_SYSTEM";
+      pkgs = import nixpkgs {
+        inherit system;
+      };
       execSh =
         expression:
         builtins.exec ([
@@ -30,9 +31,18 @@
           "-c"
           expression
         ]);
+      flakeRoot = toString (execSh "pwd");
+
+      loadFunction =
+        name:
+        import "${flakeRoot}/functions/${name}.nix" {
+          inherit lib;
+          inherit execSh;
+          inherit pkgs;
+        };
+
       isNullOrWhitespace = str: builtins.match "^[ \t\r\n]*$" (toString str) != null;
 
-      system = builtins.getEnv "CFG_SYSTEM";
       hostName = builtins.getEnv "CFG_HOSTNAME";
       timezone =
         let
@@ -60,27 +70,20 @@
 
       trace = lib.debug.traceSeq;
 
-      mkForce = nixpkgs.lib.mkForce;
-      mkAfter = nixpkgs.lib.mkAfter;
-      mkBefore = nixpkgs.lib.mkBefore;
-      mkDefault = nixpkgs.lib.mkDefault;
-      mapAttrs = nixpkgs.lib.mapAttrs;
+      mkForce = lib.mkForce;
+      mkAfter = lib.mkAfter;
+      mkBefore = lib.mkBefore;
+      mkDefault = lib.mkDefault;
+      mapAttrs = lib.mapAttrs;
 
-      flakeRoot = toString (execSh "pwd");
-
-      randomSalt = import "${flakeRoot}/utils/random-salt.nix" {
-        inherit randomSeed;
-        inherit lib;
-      };
+      randomSalt = loadFunction "random-salt" randomSeed;
 
       userPassword = builtins.getEnv "CFG_USER_PASSWORD";
       rootPassword = builtins.getEnv "CFG_ROOT_PASSWORD";
-      hashedUserPassword = toString (
-        execSh "echo '\"'$(openssl passwd -6 -salt ${randomSalt} '${userPassword}')'\"'"
-      );
-      hashedRootPassword = toString (
-        execSh "echo '\"'$(openssl passwd -6 -salt ${randomSalt} '${rootPassword}')'\"'"
-      );
+
+      hashedPasssword = loadFunction "hashed-password";
+      hashedUserPassword = hashedPasssword userPassword randomSalt;
+      hashedRootPassword = hashedPasssword rootPassword randomSalt;
       hostRoot = "${flakeRoot}/hosts/${hostName}";
     in
     assert !isNullOrWhitespace system || throw "CFG_SYSTEM environment variable must be set";

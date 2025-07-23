@@ -1,4 +1,10 @@
-{ randomSeed, lib }:
+{
+  lib,
+  pkgs,
+  execSh,
+  ...
+}:
+randomSeed:
 let
   seed = randomSeed;
   raw = builtins.hashString "md5" seed;
