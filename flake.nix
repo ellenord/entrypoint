@@ -25,13 +25,11 @@
       # };
       execSh =
         expression:
-        builtins.exec (
-          [
-            "sh"
-            "-c"
-          ]
-          ++ expression
-        );
+        builtins.exec ([
+          "sh"
+          "-c"
+          expression
+        ]);
       isNullOrWhitespace = str: builtins.match "^[ \t\r\n]*$" (toString str) != null;
 
       system = builtins.getEnv "CFG_SYSTEM";
@@ -68,7 +66,21 @@
       mkDefault = nixpkgs.lib.mkDefault;
       mapAttrs = nixpkgs.lib.mapAttrs;
 
-      flakeRoot = toString (execSh [ "pwd" ]);
+      flakeRoot = toString (execSh "pwd");
+
+      randomSalt = import "${flakeRoot}/utils/random-salt.nix" {
+        inherit randomSeed;
+        inherit lib;
+      };
+
+      userPassword = builtins.getEnv "CFG_USER_PASSWORD";
+      rootPassword = builtins.getEnv "CFG_ROOT_PASSWORD";
+      hashedUserPassword = toString (
+        execSh "echo '\"'$(openssl passwd -6 -salt ${randomSalt} '${userPassword}')'\"'"
+      );
+      hashedRootPassword = toString (
+        execSh "echo '\"'$(openssl passwd -6 -salt ${randomSalt} '${rootPassword}')'\"'"
+      );
       hostRoot = "${flakeRoot}/hosts/${hostName}";
     in
     assert !isNullOrWhitespace system || throw "CFG_SYSTEM environment variable must be set";
@@ -97,6 +109,9 @@
               trace
               mapAttrs
               mkBefore
+              hashedUserPassword
+              hashedRootPassword
+              randomSalt
               ;
           };
           utils = {

@@ -19,6 +19,7 @@ let
           "${flakeRoot}/modules/networking.nix"
           "${flakeRoot}/modules/locale.nix"
           "${flakeRoot}/modules/core"
+          "${flakeRoot}/users/root.nix"
         ]
         ++ (
           if rootOnly then
