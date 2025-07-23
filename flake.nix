@@ -81,9 +81,10 @@
       userPassword = builtins.getEnv "CFG_USER_PASSWORD";
       rootPassword = builtins.getEnv "CFG_ROOT_PASSWORD";
 
-      hashedPasssword = loadFunction "hashed-password";
-      hashedUserPassword = hashedPasssword userPassword randomSalt;
-      hashedRootPassword = hashedPasssword rootPassword randomSalt;
+      hashedPassword = loadFunction "hashed-password" randomSalt;
+      hashedUserPassword = hashedPassword userPassword;
+      hashedRootPassword = hashedPassword rootPassword;
+
       hostRoot = "${flakeRoot}/hosts/${hostName}";
     in
     assert !isNullOrWhitespace system || throw "CFG_SYSTEM environment variable must be set";
