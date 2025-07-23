@@ -3,7 +3,6 @@
   lib,
   pkgs,
   config,
-  inputs,
   ...
 }:
 with setup;
@@ -26,8 +25,7 @@ let
             [ ]
           else
             [
-              "${flakeRoot}/users/${username}.nix"
-              inputs.home-manager.nixosModules.home-manager
+              "${flakeRoot}/users"
             ]
         );
 

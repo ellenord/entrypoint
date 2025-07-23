@@ -1,29 +1,22 @@
 {
-  description = "extra cool nixos configuration";
+  description = "A highly impure and deliberately unorthodox flake template, wired for external, imperative configuration and full experimental chaos.";
 
   inputs = {
+    # We're using the unstable channel because we plan to use bleeding-edge
+    # and experimental features that require the latest Nixpkgs.
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    home-manager = {
-      url = "github:nix-community/home-manager/master";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    flake-utils.url = "github:numtide/flake-utils";
   };
 
   outputs =
     {
       self,
-      nixpkgs,
-      home-manager,
-      flake-utils,
       ...
     }@inputs:
     let
-      lib = nixpkgs.lib;
-      system = builtins.getEnv "CFG_SYSTEM";
-      pkgs = import nixpkgs {
-        inherit system;
-      };
+
+      nixpkgs = inputs.nixpkgs;
+
+      # Shell out at eval time — impure, dangerous, and sometimes absolutely necessary.
       execSh =
         expression:
         builtins.exec ([
@@ -31,7 +24,17 @@
           "-c"
           expression
         ]);
+
+      # The root of this flake, determined the dirty way.
+      # Flakes won’t give us relative paths, so we use `execSh "pwd"`
+      # to grab the real path at eval time. Impure? Yes. Effective? Absolutely.
       flakeRoot = toString (execSh "pwd");
+
+      lib = nixpkgs.lib;
+      system = builtins.getEnv "CFG_SYSTEM";
+      pkgs = import nixpkgs {
+        inherit system;
+      };
 
       loadFunction =
         name:

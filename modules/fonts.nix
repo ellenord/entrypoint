@@ -30,7 +30,7 @@ let
             monospace = mkAfter [ "MesloLGS NF" ];
           };
         };
-        packages =
+        packages = mkAfter (
           with pkgs;
           [
             # General Fonts
@@ -49,7 +49,8 @@ let
             wqy_zenhei
             wqy_microhei
           ]
-          ++ builtins.filter lib.attrsets.isDerivation (builtins.attrValues pkgs.nerd-fonts);
+          ++ builtins.filter lib.attrsets.isDerivation (builtins.attrValues pkgs.nerd-fonts)
+        );
       };
     }
     // trace "system fonts configuration loaded successfully!" { }
