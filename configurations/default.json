@@ -1,0 +1,12 @@
+{
+    "system": "x86_64-linux",
+    "hostname": "entrypoint",
+    "username": "ivan",
+    "userPassword": "123456",
+    "rootPassword": "654321",
+    "locale": "en_US.UTF-8",
+    "timezone": "UTC",
+    "rtkitEnabled": true,
+    "fstrimEnabled": true,
+    "randomSeed": "9O@I!Jy7$9iOHEi6"
+}

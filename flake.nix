@@ -30,6 +30,9 @@
       # to grab the real path at eval time. Impure? Yes. Effective? Absolutely.
       flakeRoot = toString (execSh "pwd");
 
+      configPath = "${flakeRoot}/configurations/default.json";
+      rawConfig = builtins.fromJSON (builtins.readFile configPath);
+
       lib = nixpkgs.lib;
       system = builtins.getEnv "CFG_SYSTEM";
       pkgs = import nixpkgs {
@@ -69,8 +72,6 @@
       fstrimEnabled =
         builtins.getEnv "CFG_FSTRIM_ENABLED" == "1" || builtins.getEnv "CFG_FSTRIM_ENABLED" == "true";
 
-      randomSeed = builtins.getEnv "CFG_RANDOM_SEED";
-
       trace = lib.debug.traceSeq;
 
       mkForce = lib.mkForce;
@@ -78,6 +79,10 @@
       mkBefore = lib.mkBefore;
       mkDefault = lib.mkDefault;
       mapAttrs = lib.mapAttrs;
+
+      debugOutput = loadFunction "debug-output" rawConfig.system;
+
+      randomSeed = builtins.getEnv "CFG_RANDOM_SEED";
 
       randomSalt = loadFunction "random-salt" randomSeed;
 
@@ -89,6 +94,59 @@
       hashedRootPassword = hashedPassword rootPassword;
 
       hostRoot = "${flakeRoot}/hosts/${hostName}";
+
+      # configDir = "${flakeRoot}/configurations";
+      # configFiles = builtins.readDir configDir;
+      # configs = builtins.listToAttrs (
+      #   lib.filter (x: x != null) (
+      #     lib.mapAttrsToList (
+      #       filename: type:
+      #       if type == "regular" && lib.hasSuffix ".json" filename then
+      #         let
+      #           configPath = "${configDir}/${filename}";
+      #           rawConfig = builtins.fromJSON (builtins.readFile configPath);
+
+      #           system = rawConfig.system or "x86_64-linux";
+      #           hostName = rawConfig.hostname;
+
+      #           # остальные поля можно извлекать так же
+      #           # можно также добавить fallback’ы
+
+      #           pkgs = import nixpkgs {
+      #             inherit system;
+      #           };
+
+      #           setup = {
+      #             inherit
+      #               system
+      #               hostName
+      #               rawConfig
+      #               flakeRoot
+      #               ;
+      #             # и другие поля
+      #           };
+
+      #           utils = {
+      #             inherit execSh isNullOrWhitespace;
+      #           };
+
+      #         in
+      #         {
+      #           name = hostName;
+      #           value = nixpkgs.lib.nixosSystem {
+      #             specialArgs = {
+      #               inherit inputs setup system;
+      #               lib = nixpkgs.lib // utils;
+      #             };
+      #             modules = [ "${flakeRoot}/hosts/${hostName}/configuration.nix" ];
+      #           };
+      #         }
+      #       else
+      #         null
+      #     ) configFiles
+      #   )
+      # );
+
     in
     assert !isNullOrWhitespace system || throw "CFG_SYSTEM environment variable must be set";
     assert !isNullOrWhitespace hostName || throw "CFG_HOSTNAME environment variable must be set";
@@ -119,6 +177,7 @@
               hashedUserPassword
               hashedRootPassword
               randomSalt
+              debugOutput
               ;
           };
           utils = {
