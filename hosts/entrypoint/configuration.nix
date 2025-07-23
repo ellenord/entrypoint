@@ -6,8 +6,10 @@
   inputs,
   ...
 }:
-with setup; let
-  configuration = trace "loading system host configuration...\n${lib.generators.toPretty {} setup}" ({
+with setup;
+let
+  configuration = trace "loading system host configuration...\n${lib.generators.toPretty { } setup}" (
+    {
       imports =
         [
           "${hostRoot}/hardware-configuration.nix"
@@ -19,12 +21,13 @@ with setup; let
           "${flakeRoot}/modules/core"
         ]
         ++ (
-          if rootOnly
-          then []
-          else [
-            "${flakeRoot}/users/${username}.nix"
-            inputs.home-manager.nixosModules.home-manager
-          ]
+          if rootOnly then
+            [ ]
+          else
+            [
+              "${flakeRoot}/users/${username}.nix"
+              inputs.home-manager.nixosModules.home-manager
+            ]
         );
 
       environment.systemPackages = with pkgs; [
@@ -54,6 +57,7 @@ with setup; let
         ];
       };
     }
-    // trace "system host configuration loaded successfully!" {});
+    // trace "system host configuration loaded successfully!" { }
+  );
 in
-  configuration
+configuration

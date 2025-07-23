@@ -3,8 +3,10 @@
   setup,
   ...
 }:
-with setup; let
-  module = trace "loading system boot configuration..." ({
+with setup;
+let
+  module = trace "loading system boot configuration..." (
+    {
       boot = {
         kernelParams = [
           "console=ttyS0,115200"
@@ -25,6 +27,7 @@ with setup; let
         };
       };
     }
-    // trace "system boot configuration loaded successfully!" {});
+    // trace "system boot configuration loaded successfully!" { }
+  );
 in
-  module
+module

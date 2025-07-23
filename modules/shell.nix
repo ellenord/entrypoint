@@ -4,8 +4,10 @@
   config,
   ...
 }:
-with setup; let
-  module = trace "loading system core configuration..." ({
+with setup;
+let
+  module = trace "loading system core configuration..." (
+    {
       environment = {
         systemPackages = with pkgs; [
           zsh
@@ -97,7 +99,7 @@ with setup; let
           zle -N sudo-command-line
           bindkey "\e\e" sudo-command-line
         '';
-        shellAliases = {};
+        shellAliases = { };
         histSize = 1024;
         histFile = "$HOME/.zsh_history";
         setOptions = [
@@ -105,6 +107,7 @@ with setup; let
         ];
       };
     }
-    // trace "system shell configuration loaded successfully!" {});
+    // trace "system shell configuration loaded successfully!" { }
+  );
 in
-  module
+module

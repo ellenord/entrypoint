@@ -3,9 +3,11 @@
   options,
   lib,
   ...
-}: let
+}:
+let
   username = "ellenord";
-in {
+in
+{
   config.users.users.${username} = {
     isNormalUser = true;
     hashedPassword = "$6$fEO6vnNjbEqXL2Q3$QYEQ2FBY6LSiNF/bOl8C04gC4KiasIc0xg1Ue/lxI9DVWPWqYgrCk6.SScTMpbspcSn93rIz37Z6gcfLPIHwQ0";
@@ -24,6 +26,9 @@ in {
 
     programs.home-manager.enable = true;
     programs.git.enable = true;
-    home.packages = with pkgs; [htop neofetch];
+    home.packages = with pkgs; [
+      htop
+      neofetch
+    ];
   };
 }

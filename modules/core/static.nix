@@ -4,8 +4,10 @@
   config,
   ...
 }:
-with setup; let
-  module = trace "loading system static configuration..." ({
+with setup;
+let
+  module = trace "loading system static configuration..." (
+    {
       system.stateVersion = "25.05";
       services = {
         openssh.enable = true;
@@ -24,11 +26,12 @@ with setup; let
             "root"
           ]
           ++ (
-            if rootOnly
-            then []
-            else [
-              "${username}"
-            ]
+            if rootOnly then
+              [ ]
+            else
+              [
+                "${username}"
+              ]
           );
         system-features = [
           "nix-command"
@@ -49,6 +52,7 @@ with setup; let
         ];
       };
     }
-    // trace "system static configuration loaded successfully!" {});
+    // trace "system static configuration loaded successfully!" { }
+  );
 in
-  module
+module
