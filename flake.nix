@@ -89,16 +89,63 @@
           mkDefault = lib.mkDefault;
           mapAttrs = lib.mapAttrs;
 
-          debugOutput = loadFunction "debug-output" rawConfig.system;
+          # _ = builtins.abort (tryParseHex "-0x1f");
+          debugOutput = debug (
+            trace {
+              # ✅ valid hex with 0x prefix
+              "0x1f" = tryParseHex "0x1f";
+              "0x0" = tryParseHex "0x0";
+              "0xdeadbeef" = tryParseHex "0xdeadbeef";
+              "0xABCDEF" = tryParseHex "0xABCDEF";
+
+              # ✅ valid hex without prefix
+              "FF" = tryParseHex "FF";
+              "deadbeef" = tryParseHex "deadbeef";
+              "abcdef" = tryParseHex "abcdef";
+
+              # ✅ valid with unary plus
+              "+0x1A" = tryParseHex "+0x1A";
+              "+FF" = tryParseHex "+FF";
+              "+deadbeef" = tryParseHex "+deadbeef";
+
+              # ✅ valid negative hex
+              "-0x2A" = tryParseHex "-0x2A";
+              "-deadbeef" = tryParseHex "-deadbeef";
+
+              # ❌ invalid hex with non-hex chars
+              "0x1g" = tryParseHex "0x1g";
+              "xyz" = tryParseHex "xyz";
+              "0x12Z" = tryParseHex "0x12Z";
+
+              # ❌ empty or malformed
+              "" = tryParseHex "";
+              "0x" = tryParseHex "0x";
+              "-" = tryParseHex "-";
+              "0x-" = tryParseHex "0x-";
+              "+" = tryParseHex "+";
+              "++deadbeef" = tryParseHex "++deadbeef";
+              "+-deadbeef" = tryParseHex "+-deadbeef";
+
+              # ❌ spaces in wrong places
+              " -0x123" = tryParseHex " -0x123";
+              "0x 123" = tryParseHex "0x 123";
+              "   -  0x123  " = tryParseHex "   -  0x123  ";
+
+              # ✅ extra whitespace, but otherwise valid
+              " 0x1f " = tryParseHex " 0x1f ";
+              " \tdeadbeef\n" = tryParseHex " \tdeadbeef\n";
+              " +0x1f " = tryParseHex " +0x1f ";
+            } "hex parser test suite"
+          );
 
           randomSeed = builtins.getEnv "CFG_RANDOM_SEED";
 
-          randomSalt = loadFunction "random-salt" randomSeed;
+          randomSalt = getRandomSalt randomSeed;
 
           userPassword = builtins.getEnv "CFG_USER_PASSWORD";
           rootPassword = builtins.getEnv "CFG_ROOT_PASSWORD";
 
-          hashedPassword = loadFunction "hashed-password" randomSalt;
+          hashedPassword = getHashedPassword randomSalt;
           hashedUserPassword = hashedPassword userPassword;
           hashedRootPassword = hashedPassword rootPassword;
 
