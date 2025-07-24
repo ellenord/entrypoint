@@ -11,31 +11,26 @@ let
   int = import "${rootDir}/int" {
     inherit lib flakeRoot;
   };
-  trace = lib.debug.traceSeq;
+  bool = import "${rootDir}/bool" {
+    inherit lib flakeRoot;
+  };
 in
-with int;
+with int // bool;
 {
-  inherit loadFunction;
   isNullOrWhitespace = loadFunction "is-null-or-whitespace" {
     inherit lib pkgs execSh;
   };
-  debug = loadFunction "debug" {
-    inherit trace;
-  };
-  getEnv = loadFunction "get-env" {
-    inherit lib pkgs execSh;
-  };
   getRandomSalt = loadFunction "get-random-salt" {
-    inherit lib pkgs execSh;
+    inherit lib parseHex;
   };
   getHashedPassword = loadFunction "get-hashed-password" {
-    inherit lib pkgs execSh;
+    inherit pkgs execSh;
   };
   runUnitTests = loadFunction "run-unit-tests" {
     inherit lib;
   };
+  trace = lib.debug.traceSeq;
   inherit
-    trace
     isValidHex
     tryParseHex
     parseHex
@@ -48,5 +43,8 @@ with int;
     isValidInt
     tryParseInt
     parseInt
+    isValidBool
+    tryParseBool
+    parseBool
     ;
 }

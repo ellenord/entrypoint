@@ -1,5 +1,0 @@
-{
-  trace,
-  ...
-}:
-message: trace message ""

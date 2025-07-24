@@ -1,5 +1,4 @@
 { tryParseHex, ... }:
-
 hexStr:
 let
   parsedHex = tryParseHex hexStr;

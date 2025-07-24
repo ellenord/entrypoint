@@ -1,5 +1,4 @@
 { lib, isValidDecimal, ... }:
-
 decStr:
 let
   format = str: lib.strings.trim (lib.strings.toLower str);

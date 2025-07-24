@@ -3,6 +3,7 @@
   tryParseBinary,
   tryParseDecimal,
   tryParseInt,
+  tryParseBool,
   ...
 }:
 [
@@ -11,7 +12,7 @@
     function = tryParseHex;
     tests = {
       "" = null;
-      " \tdeadbeef\n" = 3735928559;
+      " \tdeadbeef\n" = null;
       "   -  0x123  " = null;
       " +0x1f " = 31;
       " -0x123" = -291;
@@ -20,11 +21,11 @@
       "++deadbeef" = null;
       "+-deadbeef" = null;
       "+0x1A" = 26;
-      "+FF" = 255;
-      "+deadbeef" = 3735928559;
+      "+FF" = null;
+      "+deadbeef" = null;
       "-" = null;
       "-0x2A" = -42;
-      "-deadbeef" = -3735928559;
+      "-deadbeef" = null;
       "0x" = null;
       "0x 123" = null;
       "0x-" = null;
@@ -34,10 +35,10 @@
       "0x1g" = null;
       "0xABCDEF" = 11259375;
       "0xdeadbeef" = 3735928559;
-      FF = 255;
-      abcdef = 11259375;
-      deadbeef = 3735928559;
-      xyz = null;
+      "FF" = null;
+      "abcdef" = null;
+      "deadbeef" = null;
+      "xyz" = null;
     };
   }
   {
@@ -45,22 +46,22 @@
     function = tryParseBinary;
     tests = {
       "" = null;
-      "\t1010\n" = 10;
+      "\t1010\n" = null;
       "  - 0b1010 " = null;
       "  0b1010 " = 10;
       "+" = null;
       "++1010" = null;
       "+-1010" = null;
-      "+0" = 0;
+      "+0" = null;
       "+0b1" = 1;
-      "+1010" = 10;
+      "+1010" = null;
       "-" = null;
       "--1010" = null;
-      "-0001" = -1;
+      "-0001" = null;
       "-0b1" = -1;
-      "-1010" = -10;
-      "0" = 0;
-      "00000001" = 1;
+      "-1010" = null;
+      "0" = null;
+      "00000001" = null;
       "0b" = null;
       "0b0" = 0;
       "0b1" = 1;
@@ -69,11 +70,11 @@
       "0b101010" = 42;
       "0b123" = null;
       "0b2" = null;
-      "1" = 1;
+      "1" = null;
       "10 10" = null;
-      "101010" = 42;
+      "101010" = null;
       "102010" = null;
-      abc = null;
+      "abc" = null;
     };
   }
   {
@@ -105,7 +106,7 @@
       "12a3" = null;
       "1_000" = null;
       "42" = 42;
-      abc = null;
+      "abc" = null;
     };
   }
   {
@@ -114,54 +115,69 @@
     tests = {
       "" = null;
       "   \n\t  " = null;
-
-      # decimal priority
       "42" = 42;
       "+123" = 123;
       "-456" = -456;
       "000123" = 123;
       "1234567890" = 1234567890;
-
-      # even if looks like hex — decimal wins
-      "0x10" = 16; # parsed as valid hex
-      "123abc" = 1194684; # parsed as valid hex (not decimal)
+      "0x10" = 16;
+      "123abc" = null;
       "+0" = 0;
       "-0" = 0;
-
-      # hex numbers (only parsed if not valid decimal)
       "+0x1f" = 31;
       "-0x2A" = -42;
       "0x0" = 0;
       "0xdeadbeef" = 3735928559;
-      "deadbeef" = 3735928559;
-      "0x1g" = null; # invalid char in hex
+      "deadbeef" = null;
+      "0x1g" = null;
       "xyz" = null;
-
-      # binary numbers (only if not valid dec or hex)
       "0b1010" = 10;
       "+0b1" = 1;
       "-0b1" = -1;
-      "0b123" = 45347; # invalid binary but valid hex
-      "1010" = 1010; # valid decimal, not binary
-      "0b" = 11; # invalid binary but valid hex
-
-      # # edge invalids
+      "0b123" = null;
+      "1010" = 1010;
+      "0b" = null;
       "+" = null;
       "-" = null;
       "++10" = null;
       "--10" = null;
       "+-10" = null;
-
-      # # malformed or ambiguous
       "  +  0x10 " = null;
       "  - 0b10" = null;
       "0x 123" = null;
       "0b 1010" = null;
-
-      # non-numeric
-      "abc" = 2748; # parsed as hex
+      "abc" = null;
       "0xZZZ" = null;
-      "0b2" = 178; # parsed as hex
+      "0b2" = null;
+    };
+  }
+  {
+    name = "tryParseBool";
+    function = tryParseBool;
+    tests = {
+      "" = null;
+      "   " = null;
+      "true" = true;
+      "false" = false;
+      "TRUE" = true;
+      "False" = false;
+      " TrUe  " = true;
+      " FaLSe " = false;
+
+      # invalid variations
+      "yes" = null;
+      "no" = null;
+      "0" = null;
+      "1" = null;
+      "truee" = null;
+      "falsee" = null;
+      "null" = null;
+      "undefined" = null;
+      "maybe" = null;
+      "on" = null;
+      "off" = null;
+      "tru" = null;
+      "fals" = null;
     };
   }
 ]

@@ -1,5 +1,4 @@
 { tryParseDecimal, ... }:
-
 decStr:
 let
   parsedDec = tryParseDecimal decStr;

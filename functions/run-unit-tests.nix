@@ -10,7 +10,7 @@ let
       input: expected:
       let
         output = func input;
-        result = if output == expected then "✅ passed" else "❌ failed";
+        result = if output == expected then "✅ PASSED" else "❌ FAILED";
       in
       {
         inherit

@@ -300,6 +300,7 @@
                   tryParseBinary
                   tryParseDecimal
                   tryParseInt
+                  tryParseBool
                   ;
               };
             in
@@ -440,7 +441,18 @@
           unitTestsResults:
           (
             let
-              ok = (builtins.all (x: x.output == x.expected) unitTestsResults.results);
+              ok = (
+                builtins.all (
+                  x:
+                  let
+                    result = x.output == x.expected;
+                  in
+                  if result then
+                    result
+                  else
+                    (trace "unit test failed: ${x.function}(${x.input}) = ${x.output}, expected ${x.expected}" result)
+                ) unitTestsResults.results
+              );
             in
             trace "unit tests results for ${unitTestsResults.name}: ${lib.generators.toPretty { } unitTestsResults.results}}" ok
           )

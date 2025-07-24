@@ -1,5 +1,4 @@
 { tryParseBinary, ... }:
-
 binStr:
 let
   parsedBin = tryParseBinary binStr;

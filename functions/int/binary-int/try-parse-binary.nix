@@ -1,5 +1,4 @@
 { lib, isValidBinary, ... }:
-
 binStr:
 let
   format = str: lib.strings.trim (lib.strings.toLower str);
