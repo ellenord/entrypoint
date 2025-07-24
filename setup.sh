@@ -4,3 +4,5 @@ export NIXPKGS_ALLOW_UNFREE=1
 set -a
 source ./setup.env
 set +a
+
+export NIXOS_SYSTEM="x86_64-linux"
