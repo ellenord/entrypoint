@@ -6,24 +6,21 @@
   ...
 }:
 let
-  loadFunction = name: argSet: import "${flakeRoot}/functions/${name}.nix" argSet;
-  isValidHex = loadFunction "is-valid-hex-int" {
-    inherit lib;
+  rootDir = "${flakeRoot}/functions";
+  loadFunction = name: argSet: import "${rootDir}/${name}.nix" argSet;
+  int = import "${rootDir}/int" {
+    inherit lib flakeRoot;
   };
-  tryParseHex = loadFunction "try-parse-hex" {
-    inherit lib isValidHex;
-  };
-  parseHex = loadFunction "parse-hex" {
-    inherit tryParseHex;
-  };
+  trace = lib.debug.traceSeq;
 in
+with int;
 {
   inherit loadFunction;
   isNullOrWhitespace = loadFunction "is-null-or-whitespace" {
     inherit lib pkgs execSh;
   };
   debug = loadFunction "debug" {
-    inherit lib pkgs execSh;
+    inherit trace;
   };
   getEnv = loadFunction "get-env" {
     inherit lib pkgs execSh;
@@ -34,14 +31,22 @@ in
   getHashedPassword = loadFunction "get-hashed-password" {
     inherit lib pkgs execSh;
   };
-  isValidDecimal = loadFunction "is-valid-decimal-int" {
+  runUnitTests = loadFunction "run-unit-tests" {
     inherit lib;
   };
-  isValidBinary = loadFunction "is-valid-binary-int" {
-    inherit lib;
-  };
-  isValidInt = loadFunction "is-valid-int" {
-    inherit lib;
-  };
-  inherit isValidHex tryParseHex parseHex;
+  inherit
+    trace
+    isValidHex
+    tryParseHex
+    parseHex
+    isValidBinary
+    tryParseBinary
+    parseBinary
+    isValidDecimal
+    tryParseDecimal
+    parseDecimal
+    isValidInt
+    tryParseInt
+    parseInt
+    ;
 }

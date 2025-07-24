@@ -1,4 +1,5 @@
 {
+  trace,
   ...
 }:
-message: builtins.trace message ""
+message: trace message ""
