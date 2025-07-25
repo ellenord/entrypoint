@@ -1,6 +1,11 @@
 { pkgs, ... }:
 
 {
+  environment.systemPackages = with pkgs; [
+    squid
+    openssl   
+  ];
+
   services.squid = {
     enable = true;
     config = ''
@@ -21,4 +26,3 @@
 
   environment.etc."squid/passwd".source = "/etc/nixos/squid.passwd";
 }
-
