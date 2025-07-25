@@ -29,6 +29,12 @@ let
                 [
                   "${flakeRoot}/users"
                 ]
+            )
+            ++ (
+              if proxyServer then
+                [ "${flakeRoot}/modules/proxy.nix" ]
+              else
+                [ ]
             );
 
           environment.systemPackages = with pkgs; [

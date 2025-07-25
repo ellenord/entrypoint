@@ -60,13 +60,15 @@
           fstrimEnabled =
             builtins.getEnv "CFG_FSTRIM_ENABLED" == "1" || builtins.getEnv "CFG_FSTRIM_ENABLED" == "true";
 
+          proxyServer = (tryParseBool (builtins.getEnv "CFG_PROXY_SERVER")) == true;
+
           mkForce = lib.mkForce;
           mkAfter = lib.mkAfter;
           mkBefore = lib.mkBefore;
           mkDefault = lib.mkDefault;
           mapAttrs = lib.mapAttrs;
 
-          debugOutput = "";
+          debugOutput = toString proxyServer;
 
           # debugOutput = "\n\n\n${
           #   let
@@ -172,6 +174,7 @@
             isNullOrWhitespace
             tryParseHexUnitTests
             allUnitTestsResults
+            proxyServer
             ;
         };
     in
@@ -207,6 +210,7 @@
               randomSalt
               debugOutput
               breakpoint
+              proxyServer
               ;
           };
           utils = {
