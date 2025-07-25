@@ -24,11 +24,11 @@
         "nixpkgs": "nixpkgs"
       },
       "locked": {
-        "lastModified": 1753402633,
-        "narHash": "sha256-vVZqoG/mptbHdcCMZtHZ8spZOzn+u8z8XVpN/KQvxcg=",
+        "lastModified": 1753405799,
+        "narHash": "sha256-QL731b3HORnhC1BxOddf5TkHVF0HDsaXIfna4JtvXHQ=",
         "owner": "ellenord",
         "repo": "imperative-nix",
-        "rev": "f066cce4c5a97562e878f48f18f647de985bd4ee",
+        "rev": "b449fffa0c7d33be4aeca4af63afcb53469a9dc1",
         "type": "github"
       },
       "original": {

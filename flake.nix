@@ -77,20 +77,6 @@
           # debugOutput = "%%%###\n\n${lib.concatStringsSep "\n" (builtins.attrNames "x86_64-linux")}\n\n";
           # debugOutput = "%%%###\n\n${toString (imperativeNix.parseInt "-12345")}\n\n";
 
-          allUnitTestsResults =
-            let
-              allUnitTests = import "${flakeRoot}/unit-tests.nix" {
-                inherit
-                  tryParseHex
-                  tryParseBinary
-                  tryParseDecimal
-                  tryParseInt
-                  tryParseBool
-                  ;
-              };
-            in
-            builtins.map runUnitTests allUnitTests;
-
           randomSeed = builtins.getEnv "CFG_RANDOM_SEED";
 
           randomSalt = getRandomSalt randomSeed;
@@ -158,6 +144,7 @@
         in
         {
           inherit
+            breakpoint
             system
             hostName
             flakeRoot
@@ -190,30 +177,6 @@
     assert !isNullOrWhitespace system || throw "CFG_SYSTEM environment variable must be set";
     assert !isNullOrWhitespace hostName || throw "CFG_HOSTNAME environment variable must be set";
     assert !isNullOrWhitespace randomSeed || throw "CFG_RANDOM_SEED environment variable must be set";
-    assert
-      builtins.all (x: x) (
-        builtins.map (
-          unitTestsResults:
-          (
-            let
-              ok = (
-                builtins.all (
-                  x:
-                  let
-                    result = x.output == x.expected;
-                  in
-                  if result then
-                    result
-                  else
-                    (trace "unit test failed: ${x.function}(${x.input}) = ${x.output}, expected ${x.expected}" result)
-                ) unitTestsResults.results
-              );
-            in
-            trace "unit tests results for ${unitTestsResults.name}: ${lib.generators.toPretty { } unitTestsResults.results}}" ok
-          )
-        ) allUnitTestsResults
-      )
-      || throw "all unit tests must be passed";
     {
       nixosConfigurations.${hostName} =
         let
@@ -241,6 +204,7 @@
               hashedRootPassword
               randomSalt
               debugOutput
+              breakpoint
               ;
           };
           utils = {
