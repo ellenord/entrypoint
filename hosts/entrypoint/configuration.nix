@@ -30,12 +30,7 @@ let
                   "${flakeRoot}/users"
                 ]
             )
-            ++ (
-              if proxyServer then
-                [ "${flakeRoot}/modules/proxy.nix" ]
-              else
-                [ ]
-            );
+            ++ (if proxyServer then [ "${flakeRoot}/modules/proxy.nix" ] else [ ]);
 
           environment.systemPackages = with pkgs; [
             git
@@ -54,7 +49,11 @@ let
             nix-direnv
             statix
           ];
-          
+
+          nixpkgs.config.permittedInsecurePackages = [
+            "squid-7.0.1"
+          ];
+
           programs.nix-ld = {
             enable = true;
             libraries = with pkgs; [

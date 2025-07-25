@@ -2,7 +2,7 @@
 
 let
   passwdFile = "/etc/nixos/squid.passwd";
-  authHelper = "${pkgs.squidBasicAuthHelpers}/libexec/squid/basic_ncsa_auth";
+  authHelper = "${pkgs.squid}/libexec/squid/basic_ncsa_auth"; 
 in
 {
   environment.systemPackages = with pkgs; [
