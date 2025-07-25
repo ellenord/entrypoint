@@ -48,7 +48,6 @@ let
             nix-direnv
             statix
           ];
-
           programs.nix-ld = {
             enable = true;
             libraries = with pkgs; [

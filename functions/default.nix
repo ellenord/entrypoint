@@ -29,6 +29,13 @@ with int // bool;
   runUnitTests = loadFunction "run-unit-tests" {
     inherit lib;
   };
+  getRandomInt = loadFunction "get-random-int" {
+    inherit
+      pkgs
+      execSh
+      parseInt
+      ;
+  };
   trace = lib.debug.traceSeq;
   inherit
     isValidHex

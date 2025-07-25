@@ -19,15 +19,15 @@ let
         ];
       };
       programs.zsh = {
-        enable = true;
-        enableCompletion = true;
+        enable = mkForce true;
+        enableCompletion = mkForce true;
         autosuggestions = {
-          enable = true;
-          async = true;
+          enable = mkForce true;
+          async = mkForce true;
           highlightStyle = "fg=8";
         };
-        syntaxHighlighting.enable = true;
-        enableGlobalCompInit = true;
+        syntaxHighlighting.enable = mkForce true;
+        enableGlobalCompInit = mkForce true;
         shellInit = ''
           source ~/.p10k.zsh
           eval "$(direnv hook zsh)"

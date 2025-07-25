@@ -5,53 +5,30 @@
     # We're using the unstable channel because we plan to use bleeding-edge
     # and experimental features that require the latest Nixpkgs.
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    imperativeNix.url = "github:ellenord/imperative-nix";
   };
 
   outputs =
     {
       self,
+      imperativeNix,
       ...
     }@inputs:
     let
 
       nixpkgs = inputs.nixpkgs;
 
-      # Shell out at eval time — impure, dangerous, and sometimes absolutely necessary.
-      execSh =
-        expression:
-        builtins.exec ([
-          "sh"
-          "-c"
-          expression
-        ]);
-
-      # The root of this flake, determined the dirty way.
-      # Flakes won’t give us relative paths, so we use `execSh "pwd"`
-      # to grab the real path at eval time. Impure? Yes. Effective? Absolutely.
-      flakeRoot = toString (execSh "pwd");
-
       system = builtins.getEnv "NIXOS_SYSTEM";
-
-      pkgs = import nixpkgs {
-        inherit system;
-      };
 
       lib = nixpkgs.lib;
 
-      functions = import "${flakeRoot}/functions/default.nix" {
-        inherit
-          lib
-          pkgs
-          execSh
-          flakeRoot
-          ;
-      };
       configuration =
-        with functions;
+        with imperativeNix.lib.${system};
         let
 
           # functionsDir = "${flakeRoot}/functions";
           # functionsFiles = builtins.readDir functionsDir;
+          flakeRoot = toString (execSh "pwd");
 
           inherit system;
 
@@ -88,6 +65,17 @@
           mapAttrs = lib.mapAttrs;
 
           debugOutput = "";
+
+          # debugOutput = "\n\n\n${
+          #   let
+          #     gen = i: "${toString (getRandomInt { })}";
+          #     results = builtins.genList gen 100;
+          #   in
+          #   lib.concatStringsSep " " results
+          # }\n\n\n";
+
+          # debugOutput = "%%%###\n\n${lib.concatStringsSep "\n" (builtins.attrNames "x86_64-linux")}\n\n";
+          # debugOutput = "%%%###\n\n${toString (imperativeNix.parseInt "-12345")}\n\n";
 
           allUnitTestsResults =
             let
