@@ -8,7 +8,7 @@
 
   services.squid = {
     enable = true;
-    config = ''
+    extraConfig = ''
       http_port 3128
       visible_hostname proxy.local
 
