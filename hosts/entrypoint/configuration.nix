@@ -48,7 +48,14 @@ let
             alejandra
             nix-direnv
             statix
+            tailscale
           ];
+          services.tailscale.enable = true;
+
+          networking.firewall = {
+            allowedUDPPorts = [ 41641 ];
+            trustedInterfaces = [ "tailscale0" ];
+          };
 
           nixpkgs.config.permittedInsecurePackages = [
             "squid-7.0.1"
