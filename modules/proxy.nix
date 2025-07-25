@@ -1,5 +1,9 @@
 { pkgs, ... }:
 
+let
+  passwdFile = "/etc/nixos/squid.passwd";
+  authHelper = "${pkgs.squidBasicAuthHelpers}/libexec/squid/basic_ncsa_auth";
+in
 {
   environment.systemPackages = with pkgs; [
     squid
@@ -12,7 +16,7 @@
       http_port 3128
       visible_hostname proxy.local
 
-      auth_param basic program ${pkgs.squid}/libexec/basic_ncsa_auth /etc/squid/passwd
+      auth_param basic program ${authHelper} ${passwdFile}
       auth_param basic realm NixProxy
       acl authenticated proxy_auth REQUIRED
       http_access allow authenticated
@@ -22,7 +26,7 @@
     '';
   };
 
-  networking.firewall.allowedTCPPorts = [ 3128 ];
+  environment.etc."squid/passwd".source = passwdFile;
 
-  environment.etc."squid/passwd".source = "/etc/nixos/squid.passwd";
+  networking.firewall.allowedTCPPorts = [ 3128 ];
 }
